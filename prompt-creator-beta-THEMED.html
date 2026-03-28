@@ -397,6 +397,7 @@ let saved = JSON.parse(localStorage.getItem('pcl_v6') || '[]');
 let toastTimer = null;
 let powerAI = 'claude';
 let powerOpen = false;
+let powerAbort = null;
 const KEYS = { claude:'', gpt:'' };
 ['claude','gpt'].forEach(k => { const v = localStorage.getItem('pcl_key_'+k); if(v) KEYS[k]=v; });
 
@@ -821,9 +822,12 @@ function launchAI(tool) {
   if(txt.length>4000) showToast(lang==='th'?'⚠️ Prompt ยาวเกิน 4000 ตัวอักษร — ถูกตัดให้สั้นลง':'⚠️ Prompt exceeds 4000 chars — truncated for URL');
   const enc=encodeURIComponent(txt.slice(0,4000));
   const urls={claude:'https://claude.ai/new?q='+enc, gpt:'https://chatgpt.com/?q='+enc, gemini:'https://gemini.google.com/app'};
-  navigator.clipboard.writeText(txt).catch(()=>{}).finally(()=>{
+  navigator.clipboard.writeText(txt).then(()=>{
     showToast(t.toastLaunch);
     setTimeout(()=>window.open(urls[tool],'_blank'),250);
+  }).catch(()=>{
+    if(tool==='gemini') showToast(lang==='th'?'⚠️ คัดลอกไม่ได้ — ลองใช้ HTTPS':'⚠️ Copy failed — try HTTPS');
+    else { showToast(t.toastLaunch); setTimeout(()=>window.open(urls[tool],'_blank'),250); }
   });
 }
 
@@ -876,32 +880,35 @@ async function runPower() {
   const t=T[lang], txt=buildPrompt();
   if(!txt){showToast(t.toastEmpty);return;}
   if(!KEYS[powerAI]){showToast(t.errNoKey);return;}
+  if(powerAbort){powerAbort.abort();powerAbort=null;return;}
   const btn=document.getElementById('run-btn');
   const resp=document.getElementById('pw-resp');
   const respTxt=document.getElementById('resp-text');
   const dot=document.getElementById('resp-dot');
   const hdr=document.getElementById('resp-hdr-txt');
   const cpBtn=document.getElementById('copy-resp-btn');
-  btn.disabled=true; document.getElementById('run-icon').textContent='⏳';
+  powerAbort=new AbortController();
+  document.getElementById('run-icon').textContent='⏹'; document.getElementById('run-txt').textContent=lang==='th'?'หยุด':'Stop';
   resp.classList.add('show'); respTxt.textContent='';
   dot.className='resp-dot'; hdr.textContent=t.respHdr; cpBtn.style.display='none';
   try {
-    if(powerAI==='claude') await streamClaude(txt,respTxt);
-    else await streamGPT(txt,respTxt);
+    if(powerAI==='claude') await streamClaude(txt,respTxt,powerAbort.signal);
+    else await streamGPT(txt,respTxt,powerAbort.signal);
     dot.className='resp-dot done'; hdr.textContent=t.respDone;
     cpBtn.textContent=t.copyRespTxt; cpBtn.style.display='inline-block';
   } catch(err) {
-    respTxt.innerHTML='<span class="pw-err">'+t.errApi+esc(err.message)+'</span>';
-    dot.className='resp-dot done'; hdr.textContent=t.respDone;
+    if(err.name==='AbortError'){dot.className='resp-dot done'; hdr.textContent=lang==='th'?'หยุดแล้ว':'Stopped';}
+    else{respTxt.innerHTML='<span class="pw-err">'+t.errApi+esc(err.message)+'</span>';dot.className='resp-dot done'; hdr.textContent=t.respDone;}
   }
-  btn.disabled=false; document.getElementById('run-icon').textContent='▶';
+  powerAbort=null;
+  document.getElementById('run-icon').textContent='▶'; document.getElementById('run-txt').textContent=t.runTxt;
 }
 
 function appendChunk(el,chunk) { el.textContent+=chunk; el.parentElement.scrollTop=el.parentElement.scrollHeight; }
 
-async function streamClaude(prompt,el) {
+async function streamClaude(prompt,el,signal) {
   const res=await fetch('https://api.anthropic.com/v1/messages',{
-    method:'POST',
+    method:'POST',signal,
     headers:{'Content-Type':'application/json','x-api-key':KEYS.claude,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
     body:JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:1024,stream:true,messages:[{role:'user',content:prompt}]})
   });
@@ -919,9 +926,9 @@ async function streamClaude(prompt,el) {
   }
 }
 
-async function streamGPT(prompt,el) {
+async function streamGPT(prompt,el,signal) {
   const res=await fetch('https://api.openai.com/v1/chat/completions',{
-    method:'POST',
+    method:'POST',signal,
     headers:{'Content-Type':'application/json','Authorization':'Bearer '+KEYS.gpt},
     body:JSON.stringify({model:'gpt-4o-mini',max_tokens:1024,stream:true,messages:[{role:'user',content:prompt}]})
   });
