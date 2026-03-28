@@ -3,10 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#6c8fff">
+<meta name="theme-color" content="#5b6abf">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Prompt Beta ✦">
+<meta name="apple-mobile-web-app-title" content="Prompt Creator">
+<meta name="apple-touch-icon" href="icon-192.svg">
+<link rel="manifest" href="manifest.json">
 <title>Prompt Creator Beta</title>
 <style>
 :root {
@@ -1048,6 +1050,7 @@ renderFlags();
 renderPriGrid();
 renderSaved();
 if(lang!=='th') applyLang();
+if('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js');
 </script>
 </body>
 </html>
