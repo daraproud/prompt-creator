@@ -387,7 +387,7 @@ input[type=range]::-moz-range-thumb{width:18px;height:18px;border-radius:50%;bor
 // STATE — declared first so all functions can access them
 // ═══════════════════════════════════════════════════════
 const FIELDS = ['role','context','task','constraints','output'];
-let lang = 'th';
+let lang = localStorage.getItem('pcl_lang') || 'th';
 let confidence = 0.80;
 let activeFlags = [];
 let selLen = 'short';
@@ -591,7 +591,7 @@ const T = {
 // ═══════════════════════════════════════════════════════
 // LANGUAGE
 // ═══════════════════════════════════════════════════════
-function toggleLang() { lang = lang==='th'?'en':'th'; applyLang(); renderPreview(); }
+function toggleLang() { lang = lang==='th'?'en':'th'; localStorage.setItem('pcl_lang',lang); applyLang(); renderPreview(); }
 
 function applyLang() {
   const t = T[lang];
@@ -634,6 +634,7 @@ function applyLang() {
   document.getElementById('pw-badge').textContent = t.pwBadge;
   document.getElementById('save-key-txt').textContent = t.saveKeyTxt;
   document.getElementById('key-ok-txt').textContent = t.keyOkTxt;
+  document.getElementById('key-warn').textContent = t.keyWarn;
   document.getElementById('run-txt').textContent = t.runTxt;
   document.getElementById('model-note').textContent = t.modelNotes[powerAI];
   document.getElementById('copy-resp-btn').textContent = t.copyRespTxt;
@@ -891,7 +892,7 @@ async function runPower() {
     cpBtn.textContent=t.copyRespTxt; cpBtn.style.display='inline-block';
   } catch(err) {
     respTxt.innerHTML='<span class="pw-err">'+t.errApi+esc(err.message)+'</span>';
-    dot.className='resp-dot done';
+    dot.className='resp-dot done'; hdr.textContent=t.respDone;
   }
   btn.disabled=false; document.getElementById('run-icon').textContent='▶';
 }
@@ -978,7 +979,7 @@ function loadPrompt(id) {
   if(p.selLen){selLen=p.selLen;renderLenChips();}
   selFmts=p.selFmts?[...p.selFmts]:(p.selFmt?[p.selFmt]:[]);
   renderFmtChips();
-  const ci=document.getElementById('cust-input');if(ci&&p.custFmt)ci.value=p.custFmt;
+  const ci=document.getElementById('cust-input');if(ci)ci.value=p.custFmt||'';
   if(p.priorities){ priorities={ urgency:!!p.priorities.urgency, risk:!!p.priorities.risk }; }
   activeFlags=p.flags?[...p.flags]:[];
   renderFlags(); renderPriGrid(); renderPreview();
@@ -1039,6 +1040,7 @@ renderFmtChips();
 renderFlags();
 renderPriGrid();
 renderSaved();
+if(lang!=='th') applyLang();
 </script>
 </body>
 </html>
