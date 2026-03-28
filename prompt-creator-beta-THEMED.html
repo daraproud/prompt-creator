@@ -1,0 +1,1044 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#6c8fff">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Prompt Beta ✦">
+<title>Prompt Creator Beta</title>
+<style>
+:root {
+  --font-body:-apple-system,'Helvetica Neue','Noto Sans Thai UI',Arial,sans-serif;
+  --font-display:-apple-system,'Helvetica Neue','Noto Sans Thai UI',Arial,sans-serif;
+  --bg:#f7f7fa;--card:#ffffff;--card2:#f0f0f5;
+  --border:#e2e4ec;--border2:#cfd2de;
+  --text:#1a1a2e;--muted:#6b7080;--muted2:#9ca0af;
+  --accent:#5b6abf;--accent2:#4a58a6;--accent-dim:rgba(91,106,191,0.08);
+  --gold:#c49a2a;--gold-dim:rgba(196,154,42,0.10);
+  --green:#2d8a54;--green-dim:rgba(45,138,84,0.10);
+  --red:#d94452;--red-dim:rgba(217,68,82,0.08);
+  --teal:#2a9d8f;--purple:#7c6bc4;--pink:#d4537e;
+  --orange:#c67a35;--orange-dim:rgba(198,122,53,0.10);
+  --rose:#c94a6a;--rose-dim:rgba(201,74,106,0.10);
+}
+/* ═══════════════════════════════════════════════════════
+   DARK THEME — applied when user toggles to dark mode.
+   Uses [data-theme="dark"] on <html> element.
+   These are your ORIGINAL colors preserved exactly.
+   ═══════════════════════════════════════════════════════ */
+[data-theme="dark"] {
+  --bg:#0f1117;--card:#1c1f2b;--card2:#222535;
+  --border:#2a2d3e;--border2:#353854;
+  --text:#e8eaf6;--muted:#7b7f9e;--muted2:#555875;
+  --accent:#6c8fff;--accent2:#8ba4ff;--accent-dim:rgba(91,106,191,0.06);
+  --gold:#f0c060;--gold-dim:rgba(240,192,96,0.12);
+  --green:#5dd9a0;--green-dim:rgba(93,217,160,0.12);
+  --red:#ff7b7b;--red-dim:rgba(255,123,123,0.10);
+  --teal:#5dcfcf;--purple:#b07bff;--pink:#ff8fab;
+  --orange:#ff9d5c;--orange-dim:rgba(255,157,92,0.12);
+  --rose:#ff6b8a;--rose-dim:rgba(255,107,138,0.12);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);font-family:var(--font-body);color:var(--text);min-height:100vh;font-size:15px;line-height:1.6}
+body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(91,106,191,0.04) 1px,transparent 1px),linear-gradient(90deg,rgba(91,106,191,0.04) 1px,transparent 1px);background-size:40px 40px;pointer-events:none;z-index:0}
+[data-theme="dark"] body::before{background-image:linear-gradient(rgba(108,143,255,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(108,143,255,0.03) 1px,transparent 1px)}
+header{position:sticky;top:0;z-index:20;background:rgba(247,247,250,0.94);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);padding:13px 24px;display:flex;align-items:center;justify-content:space-between}
+[data-theme="dark"] header{background:rgba(15,17,23,0.94)}
+.logo{display:flex;align-items:center;gap:12px}
+.logo-mark{width:36px;height:36px;background:linear-gradient(135deg,var(--accent),var(--purple));border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:17px;box-shadow:0 0 16px rgba(91,106,191,0.2);flex-shrink:0}
+.logo-title{font-family:var(--font-display);font-size:16px;font-weight:600;line-height:1.2}
+.logo-sub{font-size:11px;color:var(--muted);letter-spacing:.04em}
+.lang-btn{background:var(--accent-dim);border:1px solid rgba(91,106,191,0.2);border-radius:20px;padding:6px 16px;font-family:var(--font-display);font-size:13px;font-weight:600;color:var(--accent2);cursor:pointer;transition:all .15s;user-select:none}
+.lang-btn:hover{background:rgba(91,106,191,0.10)}
+.main{position:relative;z-index:1;max-width:800px;margin:0 auto;padding:32px 18px 80px}
+.intro{text-align:center;margin-bottom:36px;animation:fadeUp .5s ease}
+.eyebrow{display:inline-block;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);background:var(--accent-dim);border:1px solid rgba(91,106,191,0.15);padding:4px 14px;border-radius:20px;margin-bottom:14px;font-weight:600}
+.intro h1{font-family:var(--font-display);font-size:28px;font-weight:700;line-height:1.3;margin-bottom:8px}
+.intro h1 span{color:var(--accent2)}
+.intro p{font-size:14px;color:var(--muted);line-height:1.7}
+.steps{display:flex;flex-direction:column;gap:10px}
+.step-card{background:var(--card);border:1px solid var(--border);border-radius:14px;overflow:hidden;transition:border-color .2s,box-shadow .2s;animation:fadeUp .5s ease both}
+.step-card:nth-child(1){animation-delay:.04s}.step-card:nth-child(2){animation-delay:.08s}.step-card:nth-child(3){animation-delay:.12s}.step-card:nth-child(4){animation-delay:.16s}.step-card:nth-child(5){animation-delay:.20s}
+.step-card:focus-within{border-color:rgba(91,106,191,0.35);box-shadow:0 0 0 3px rgba(91,106,191,0.06)}
+.step-card.has-content{border-color:var(--border2)}
+.step-card.summary-card{margin-top:10px;animation-delay:.24s;border-color:rgba(212,83,126,0.18)}
+.step-hdr{display:flex;align-items:flex-start;gap:12px;padding:14px 16px 10px}
+.step-num{width:28px;height:28px;border-radius:50%;background:var(--card2);border:1.5px solid var(--border2);color:var(--muted);font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .25s}
+.step-num.filled{background:linear-gradient(135deg,var(--accent),var(--purple));border-color:transparent;color:white;box-shadow:0 0 10px rgba(91,106,191,0.25)}
+.step-num.filled-s{background:linear-gradient(135deg,var(--pink),#d97bff);border-color:transparent;color:white}
+.step-info{flex:1}
+.step-title{font-family:var(--font-display);font-size:14px;font-weight:600;margin-bottom:2px}
+.step-hint{font-size:12px;color:var(--muted);line-height:1.5}
+.step-badge{font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px;letter-spacing:.05em;flex-shrink:0;margin-top:2px}
+.badge-req{background:var(--accent-dim);color:var(--accent2);border:1px solid rgba(91,106,191,0.15)}
+.badge-opt{background:rgba(107,112,128,0.08);color:var(--muted);border:1px solid var(--border)}
+.step-body{padding:0 16px 16px 56px}
+textarea{width:100%;background:var(--bg);border:1px solid var(--border);border-radius:9px;padding:10px 12px;font-family:var(--font-body);font-size:14px;color:var(--text);line-height:1.65;resize:none;outline:none;transition:border-color .2s,background .2s;min-height:72px}
+textarea:focus{border-color:rgba(91,106,191,0.35);background:rgba(91,106,191,0.03)}
+textarea::placeholder{color:var(--muted2)}
+.example-tag{display:inline-block;margin-top:8px;font-size:12px;color:var(--teal);background:rgba(42,157,143,0.08);border:1px solid rgba(42,157,143,0.15);padding:3px 10px;border-radius:20px;cursor:pointer;transition:all .15s;font-weight:500;user-select:none}
+.example-tag:hover{background:rgba(42,157,143,0.12)}
+.row-lbl{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
+.chip-group{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:4px}
+.chip{display:flex;align-items:center;gap:6px;padding:7px 11px;border-radius:9px;border:1px solid var(--border);background:var(--bg);cursor:pointer;user-select:none;transition:all .15s;font-size:12px;color:var(--muted);font-family:var(--font-body);font-weight:500;white-space:nowrap}
+.chip:hover{border-color:var(--border2);color:var(--text)}
+.chip.sl{border-color:rgba(45,138,84,0.35);background:var(--green-dim);color:var(--green)}
+.chip.sf{border-color:rgba(212,83,126,0.35);background:rgba(212,83,126,0.08);color:var(--pink)}
+.chip-dot{width:7px;height:7px;border-radius:50%;border:1.5px solid currentColor;flex-shrink:0;transition:background .15s}
+.chip.sl .chip-dot,.chip.sf .chip-dot{background:currentColor}
+.chip-desc{font-size:12px;color:var(--muted);line-height:1.5;margin-top:4px;min-height:16px}
+.cust-wrap{display:none;margin-top:8px}
+.cust-wrap.show{display:block}
+.cust-wrap input{width:100%;background:var(--bg);border:1px solid var(--border2);border-radius:8px;padding:9px 12px;font-family:var(--font-body);font-size:13px;color:var(--text);outline:none;transition:border-color .2s}
+.cust-wrap input:focus{border-color:var(--accent)}
+.cust-wrap input::placeholder{color:var(--muted2)}
+.settings-panel{margin-top:10px;background:var(--card);border:1px solid var(--border);border-radius:14px;overflow:hidden;animation:fadeUp .5s ease .28s both}
+.set-hdr{display:flex;align-items:center;gap:10px;padding:13px 16px;cursor:pointer;user-select:none;border-bottom:1px solid transparent;transition:border-color .2s}
+.settings-panel.open .set-hdr{border-color:var(--border)}
+.set-icon{width:26px;height:26px;border-radius:8px;background:var(--gold-dim);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
+.set-title{font-family:var(--font-display);font-size:13px;font-weight:600;flex:1}
+.set-sub{font-size:11px;color:var(--muted)}
+.set-chev{font-size:10px;color:var(--muted);transition:transform .2s}
+.settings-panel.open .set-chev{transform:rotate(180deg)}
+.set-body{display:none;padding:16px}
+.settings-panel.open .set-body{display:block}
+.sec-lbl{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:10px;padding-left:2px}
+.divider{height:1px;background:var(--border);margin:16px 0}
+.conf-main{font-family:var(--font-display);font-size:13px;font-weight:600;margin-bottom:2px}
+.conf-sub{font-size:12px;color:var(--muted);margin-bottom:10px}
+.conf-row{display:flex;align-items:center;gap:12px;margin-bottom:8px}
+input[type=range]{flex:1;height:4px;-webkit-appearance:none;appearance:none;background:var(--border2);border-radius:2px;outline:none;cursor:pointer}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;border-radius:50%;background:var(--accent);box-shadow:0 0 8px rgba(91,106,191,0.35);cursor:pointer}
+input[type=range]::-moz-range-thumb{width:18px;height:18px;border-radius:50%;border:none;background:var(--accent);cursor:pointer}
+.conf-val{font-family:var(--font-display);font-size:19px;font-weight:700;color:var(--accent);min-width:44px;text-align:right}
+.conf-desc-box{font-size:12px;color:var(--muted);background:var(--accent-dim);border:1px solid rgba(91,106,191,0.12);border-radius:8px;padding:8px 12px;line-height:1.5;margin-bottom:18px}
+.conf-desc-box b{color:var(--accent2)}
+.flags-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.flag-item{display:flex;align-items:flex-start;gap:9px;padding:10px 12px;background:var(--bg);border:1px solid var(--border);border-radius:10px;cursor:pointer;user-select:none;transition:all .15s}
+.flag-item:hover{border-color:var(--border2)}
+.flag-item.on-g{border-color:rgba(93,217,160,0.4);background:var(--green-dim)}
+.flag-item.on-b{border-color:rgba(91,106,191,0.25);background:var(--accent-dim)}
+.flag-item.on-r{border-color:rgba(217,68,82,0.3);background:var(--red-dim)}
+.flag-item.on-o{border-color:rgba(196,154,42,0.3);background:var(--gold-dim)}
+.flag-chk{width:17px;height:17px;border-radius:4px;border:1.5px solid var(--border2);background:var(--card);display:flex;align-items:center;justify-content:center;font-size:10px;color:transparent;flex-shrink:0;transition:all .15s;margin-top:1px}
+.flag-item.on-g .flag-chk{background:var(--green);border-color:var(--green);color:white}
+.flag-item.on-b .flag-chk{background:var(--accent);border-color:var(--accent);color:white}
+.flag-item.on-r .flag-chk{background:var(--red);border-color:var(--red);color:white}
+.flag-item.on-o .flag-chk{background:var(--gold);border-color:var(--gold);color:white}
+.flag-name{font-size:12px;font-weight:700;margin-bottom:2px}
+.flag-item.on-g .flag-name{color:var(--green)}
+.flag-item.on-b .flag-name{color:var(--accent2)}
+.flag-item.on-r .flag-name{color:var(--red)}
+.flag-item.on-o .flag-name{color:var(--gold)}
+.flag-desc{font-size:11px;color:var(--muted);line-height:1.4}
+.pri-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.pflag{padding:12px;background:var(--bg);border:1px solid var(--border);border-radius:10px;transition:all .15s;cursor:pointer;user-select:none}
+.pflag:hover{border-color:var(--border2)}
+.pflag.on-urg{border-color:rgba(198,122,53,0.35);background:var(--orange-dim)}
+.pflag.on-risk{border-color:rgba(201,74,106,0.35);background:var(--rose-dim)}
+.pflag-hdr{display:flex;align-items:center;gap:8px;margin-bottom:4px}
+.pflag-icon{font-size:17px}
+.pflag-name{font-size:12px;font-weight:700}
+.pflag.on-urg .pflag-name{color:var(--orange)}
+.pflag.on-risk .pflag-name{color:var(--rose)}
+.pflag-desc{font-size:11px;color:var(--muted);line-height:1.4;margin-bottom:8px}
+.preview-wrap{margin-top:18px;animation:fadeUp .4s ease .32s both}
+.sec-lbl-bare{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:10px;padding-left:2px}
+.preview-box{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:18px 20px;font-size:13px;line-height:1.85;color:var(--text);white-space:pre-wrap;word-break:break-word;min-height:76px}
+.p-empty{color:var(--muted2);font-style:italic;font-size:13px}
+.ptag{font-weight:700;color:var(--accent2);font-family:var(--font-display);font-size:11px}
+.ptag-s{font-weight:700;color:var(--pink);font-family:var(--font-display);font-size:11px}
+.ptag-c{color:var(--green);font-size:11px}
+.ptag-f{color:var(--gold);font-size:11px}
+.ptag-p{color:var(--orange);font-size:11px}
+.actions{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap;animation:fadeUp .4s ease .36s both}
+.btn{padding:11px 18px;border-radius:10px;font-family:var(--font-display);font-size:13px;font-weight:600;cursor:pointer;border:none;transition:all .15s;display:flex;align-items:center;gap:6px}
+.btn-pri{background:linear-gradient(135deg,var(--accent),var(--purple));color:white;box-shadow:0 2px 14px rgba(91,106,191,0.2)}
+.btn-pri:hover{transform:translateY(-1px);box-shadow:0 4px 20px rgba(91,106,191,0.25)}
+.btn-sav{background:var(--green-dim);color:var(--green);border:1px solid rgba(45,138,84,0.18)}
+.btn-sav:hover{background:rgba(45,138,84,0.14);transform:translateY(-1px)}
+.btn-clr{background:rgba(107,112,128,0.06);color:var(--muted);border:1px solid var(--border);margin-left:auto}
+.btn-clr:hover{background:rgba(107,112,128,0.12);color:var(--text)}
+/* AI section */
+.ai-wrap{margin-top:12px;animation:fadeUp .4s ease .38s both}
+.ai-row{display:flex;gap:7px;flex-wrap:wrap}
+.ai-btn{display:flex;align-items:center;gap:7px;padding:9px 14px;border-radius:10px;border:1px solid var(--border);background:var(--card);cursor:pointer;font-size:12px;font-weight:600;color:var(--text);font-family:var(--font-body);transition:all .17s;user-select:none;flex:1;min-width:100px;justify-content:center}
+.ai-btn:hover{transform:translateY(-2px);box-shadow:0 4px 14px rgba(0,0,0,0.15)}
+.ai-c{border-color:rgba(160,130,70,0.3);background:rgba(160,130,70,0.06)}.ai-c:hover{border-color:rgba(160,130,70,0.5);background:rgba(160,130,70,0.10)}
+.ai-g{border-color:rgba(16,130,100,0.3);background:rgba(16,130,100,0.06)}.ai-g:hover{border-color:rgba(16,130,100,0.5);background:rgba(16,130,100,0.10)}
+.ai-m{border-color:rgba(50,110,200,0.3);background:rgba(50,110,200,0.06)}.ai-m:hover{border-color:rgba(50,110,200,0.5);background:rgba(50,110,200,0.10)}
+.ai-note{font-size:11px;color:var(--muted2);margin-top:7px;line-height:1.5;padding-left:2px}
+/* Saved */
+.saved-wrap{margin-top:28px;animation:fadeUp .4s ease .42s both}
+.saved-list{display:flex;flex-direction:column;gap:8px}
+.saved-item{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:11px 14px;display:flex;align-items:center;gap:10px;transition:border-color .15s}
+.saved-item:hover{border-color:var(--border2)}
+.saved-name{font-family:var(--font-display);font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex:1}
+.saved-sub{font-size:11px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:200px}
+.saved-btns{display:flex;gap:5px;flex-shrink:0}
+.icon-btn{background:none;border:1px solid var(--border);border-radius:7px;padding:5px 9px;cursor:pointer;font-size:11px;font-weight:600;color:var(--muted);font-family:var(--font-body);transition:all .15s}
+.icon-btn:hover{background:var(--card2);color:var(--text);border-color:var(--border2)}
+.icon-btn.del:hover{background:var(--red-dim);border-color:rgba(217,68,82,0.3);color:var(--red)}
+.no-saved{text-align:center;padding:20px;color:var(--muted);font-size:13px;background:var(--card);border:1px dashed var(--border);border-radius:12px;line-height:1.7}
+/* Modal */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.4);backdrop-filter:blur(6px);z-index:50;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .2s}
+.modal-overlay.show{opacity:1;pointer-events:all}
+.modal{background:var(--card);border:1px solid var(--border2);border-radius:18px;padding:26px;width:90%;max-width:420px;box-shadow:0 20px 60px rgba(0,0,0,0.4);transform:scale(0.94) translateY(8px);transition:transform .25s}
+.modal-overlay.show .modal{transform:scale(1) translateY(0)}
+.modal h3{font-family:var(--font-display);font-size:17px;font-weight:700;margin-bottom:5px}
+.modal p{font-size:13px;color:var(--muted);margin-bottom:16px;line-height:1.6}
+.modal input{width:100%;background:var(--bg);border:1px solid var(--border2);border-radius:8px;padding:10px 13px;font-family:var(--font-body);font-size:14px;color:var(--text);outline:none;transition:border-color .2s;margin-bottom:16px}
+.modal input:focus{border-color:var(--accent)}
+.modal input::placeholder{color:var(--muted2)}
+.modal-actions{display:flex;gap:10px}
+.btn-ms{background:linear-gradient(135deg,var(--accent),var(--purple));color:white;padding:10px 18px;border-radius:9px;border:none;font-family:var(--font-display);font-size:13px;font-weight:600;cursor:pointer;flex:1;transition:opacity .15s}
+.btn-ms:hover{opacity:.88}
+.btn-mc{background:var(--card2);color:var(--muted);padding:10px 18px;border-radius:9px;border:1px solid var(--border);font-family:var(--font-display);font-size:13px;font-weight:600;cursor:pointer;transition:background .15s}
+.btn-mc:hover{background:var(--border);color:var(--text)}
+.toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(16px);background:var(--card2);border:1px solid var(--border2);color:var(--text);padding:11px 22px;border-radius:50px;font-size:13px;font-weight:600;opacity:0;transition:all .3s;pointer-events:none;z-index:100;white-space:nowrap;box-shadow:0 4px 20px rgba(0,0,0,0.25)}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+/* Power mode */
+.power-toggle-row{display:inline-flex;align-items:center;gap:7px;margin-top:13px;cursor:pointer;user-select:none}
+.power-toggle-row:hover .pw-lbl{color:var(--text)}
+.pw-chev{font-size:10px;color:var(--muted);transition:transform .2s}
+.power-panel.open .pw-chev{transform:rotate(180deg)}
+.pw-lbl{font-size:12px;color:var(--muted);font-weight:600;transition:color .15s}
+.pw-badge{font-size:10px;padding:2px 7px;border-radius:10px;background:var(--gold-dim);color:var(--gold);border:1px solid rgba(196,154,42,0.2);font-weight:700;letter-spacing:.04em}
+.pw-body{display:none;margin-top:10px;background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:hidden}
+.power-panel.open .pw-body{display:block}
+.pw-tabs{display:flex;border-bottom:1px solid var(--border)}
+.pw-tab{flex:1;padding:9px;font-size:12px;font-weight:600;color:var(--muted);background:none;border:none;border-bottom:2px solid transparent;margin-bottom:-1px;cursor:pointer;font-family:var(--font-body);transition:all .15s;text-align:center}
+.pw-tab:hover{color:var(--text)}
+.pw-tab.tc{color:var(--gold);border-bottom-color:var(--gold);background:rgba(160,130,70,0.04)}
+.pw-tab.tg{color:#10a37f;border-bottom-color:#10a37f;background:rgba(16,163,127,0.04)}
+.pw-key-row{padding:12px 14px;border-bottom:1px solid var(--border);display:flex;gap:7px;align-items:center}
+.pw-key-inp{flex:1;background:var(--bg);border:1px solid var(--border2);border-radius:8px;padding:8px 11px;font-family:var(--font-body);font-size:12px;color:var(--text);outline:none;transition:border-color .2s}
+.pw-key-inp:focus{border-color:var(--accent)}
+.pw-key-inp::placeholder{color:var(--muted2)}
+.pw-key-btn{background:var(--card2);border:1px solid var(--border2);border-radius:8px;padding:8px 11px;font-size:12px;font-weight:600;color:var(--muted);cursor:pointer;font-family:var(--font-body);transition:all .15s;white-space:nowrap}
+.pw-key-btn:hover{color:var(--text)}
+.pw-key-ok{font-size:11px;color:var(--green);padding:4px 14px 0;display:none}
+.pw-key-ok.show{display:block}
+.pw-run-row{padding:11px 14px;display:flex;align-items:center;gap:10px}
+.pw-run-btn{background:linear-gradient(135deg,var(--accent),var(--purple));color:white;border:none;border-radius:9px;padding:9px 18px;font-size:13px;font-weight:600;cursor:pointer;font-family:var(--font-body);transition:all .15s;display:flex;align-items:center;gap:6px}
+.pw-run-btn:hover{transform:translateY(-1px);box-shadow:0 4px 14px rgba(91,106,191,0.25)}
+.pw-run-btn:disabled{opacity:.5;cursor:not-allowed;transform:none;box-shadow:none}
+.pw-model-note{font-size:11px;color:var(--muted2);line-height:1.4}
+.pw-resp{display:none;border-top:1px solid var(--border);padding:14px;max-height:400px;overflow-y:auto}
+.pw-resp.show{display:block}
+.pw-resp-hdr{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.resp-dot{width:6px;height:6px;border-radius:50%;background:var(--green);animation:pulse 1.2s infinite}
+.resp-dot.done{animation:none;background:var(--muted2)}
+.pw-resp-text{font-size:13px;color:var(--text);line-height:1.8;white-space:pre-wrap;word-break:break-word}
+.pw-copy-resp{margin-top:10px;background:var(--card2);border:1px solid var(--border);border-radius:7px;padding:6px 13px;font-size:12px;font-weight:600;color:var(--muted);cursor:pointer;font-family:var(--font-body);transition:all .15s;display:none}
+.pw-copy-resp:hover{color:var(--text);border-color:var(--border2)}
+.pw-err{font-size:13px;color:var(--red);line-height:1.6}
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+@media(max-width:560px){.step-body{padding-left:18px}.flags-grid,.pri-grid{grid-template-columns:1fr}.saved-sub{display:none}.btn-clr{margin-left:0;width:100%;justify-content:center}.chip-group{gap:5px}}
+</style>
+</head>
+<body>
+<header>
+  <div class="logo">
+    <div class="logo-mark">✦</div>
+    <div>
+      <div class="logo-title">Prompt Creator Beta</div>
+      <div class="logo-sub" id="logo-sub">สร้าง Prompt ที่ดีกว่า</div>
+    </div>
+  </div>
+  <div style="display:flex;gap:8px;align-items:center">
+    <button class="lang-btn" id="theme-btn" onclick="toggleTheme()" title="Toggle dark/light mode">☀️</button>
+    <button class="lang-btn" id="lang-btn" onclick="toggleLang()">EN</button>
+  </div>
+</header>
+<div class="main">
+  <div class="intro">
+    <div class="eyebrow" id="eyebrow">เครื่องมือฟรี · ใช้งานง่าย</div>
+    <h1 id="intro-title">เขียน Prompt ให้ AI <span>ฉลาดขึ้น</span></h1>
+    <p id="intro-sub">กรอกข้อมูลทีละขั้นตอน — แค่ 3 ขั้นแรกก็พอเริ่มได้</p>
+  </div>
+  <div class="steps" id="steps-container"></div>
+  <!-- Step 6 Summary -->
+  <div class="step-card summary-card" id="card-summary">
+    <div class="step-hdr">
+      <div class="step-num filled-s">6</div>
+      <div class="step-info">
+        <div class="step-title" id="s6-title">📝 สรุป — อยากได้คำตอบแบบไหน?</div>
+        <div class="step-hint" id="s6-hint">เลือกความยาวและรูปแบบ</div>
+      </div>
+      <span class="step-badge badge-opt" id="s6-badge">ไม่บังคับ</span>
+    </div>
+    <div class="step-body">
+      <div class="row-lbl" id="fmt-lbl">รูปแบบ</div>
+      <div class="chip-group" id="fmt-chips"></div>
+      <div class="cust-wrap" id="cust-wrap"><input type="text" id="cust-input" placeholder="" oninput="renderPreview()"></div>
+      <div class="chip-desc" id="fmt-desc"></div>
+    </div>
+  </div>
+  <!-- Settings -->
+  <div class="settings-panel" id="settings-panel">
+    <div class="set-hdr" onclick="toggleSettings()">
+      <div class="set-icon">⚙️</div>
+      <div style="flex:1">
+        <div class="set-title" id="set-title">ตั้งค่าขั้นสูง</div>
+        <div class="set-sub" id="set-sub">ความมั่นใจ · Flag · ความเร่งด่วน · ความเสี่ยง</div>
+      </div>
+      <span class="set-chev">▼</span>
+    </div>
+    <div class="set-body">
+      <div class="sec-lbl" id="conf-lbl">ระดับความมั่นใจ</div>
+      <div class="conf-main" id="conf-main">ขั้นต่ำที่ยอมรับได้</div>
+      <div class="conf-sub" id="conf-sub">ถ้า AI ไม่มั่นใจเกินนี้ให้บอกด้วย</div>
+      <div class="conf-row">
+        <input type="range" id="conf-slider" min="0.50" max="1.00" step="0.05" value="0.80" oninput="updateConf()">
+        <div class="conf-val" id="conf-val">0.80</div>
+      </div>
+      <div class="conf-desc-box" id="conf-desc-box"></div>
+      <div class="divider"></div>
+      <div class="sec-lbl" id="flags-lbl">Flag ผลลัพธ์</div>
+      <div class="flags-grid" id="flags-grid"></div>
+      <div class="divider"></div>
+      <div class="sec-lbl" id="pri-lbl">ติดป้ายลำดับความสำคัญ</div>
+      <div class="pri-grid" id="pri-grid"></div>
+    </div>
+  </div>
+  <!-- Preview -->
+  <div class="preview-wrap">
+    <div class="sec-lbl-bare" id="prev-lbl">Prompt สำเร็จรูปของคุณ</div>
+    <div class="preview-box" id="preview"><span class="p-empty" id="prev-empty">กรอกข้อมูลด้านบนเพื่อดู Prompt ✦</span></div>
+  </div>
+  <!-- Actions -->
+  <div class="actions">
+    <button class="btn btn-pri" id="copy-btn" onclick="copyPrompt()">📋 คัดลอก</button>
+    <button class="btn btn-sav" id="save-btn" onclick="openModal()">💾 บันทึก</button>
+    <button class="btn btn-clr" id="clr-btn" onclick="clearAll()">↺ ล้าง</button>
+  </div>
+  <p class="ai-note" id="copy-guide">📌 คัดลอก Prompt แล้วนำไปวางใน AI ที่คุณใช้ได้เลย หรือกดปุ่มด้านล่างเพื่อเปิดอัตโนมัติ</p>
+  <!-- AI section -->
+  <div class="ai-wrap">
+    <div class="sec-lbl-bare" id="ai-lbl">เปิดใน AI ที่คุณชอบ</div>
+    <div class="ai-row">
+      <button class="ai-btn ai-c" onclick="launchAI('claude')">✦ Claude</button>
+      <button class="ai-btn ai-g" onclick="launchAI('gpt')">⬡ ChatGPT</button>
+      <button class="ai-btn ai-m" onclick="launchAI('gemini')">◈ Gemini</button>
+    </div>
+    <div class="ai-note" id="ai-note">กด AI ที่ต้องการ — Prompt ถูกคัดลอกและเปิด AI ให้อัตโนมัติ</div>
+
+    <!-- Power panel -->
+    <div class="power-panel" id="power-panel">
+      <div class="power-toggle-row" onclick="togglePower()">
+        <span class="pw-chev">▼</span>
+        <span class="pw-lbl" id="pw-lbl">รันใน Tool นี้เลย</span>
+        <span class="pw-badge" id="pw-badge">POWER</span>
+      </div>
+      <div class="pw-body">
+        <div class="pw-tabs">
+          <button class="pw-tab tc" id="ptab-claude" onclick="selectAI('claude')">✦ Claude</button>
+          <button class="pw-tab" id="ptab-gpt" onclick="selectAI('gpt')">⬡ ChatGPT</button>
+        </div>
+        <div class="pw-key-row">
+          <input class="pw-key-inp" type="password" id="key-inp" autocomplete="off" placeholder="sk-ant-..." oninput="onKeyType()">
+          <button class="pw-key-btn" onclick="saveKey()">💾 <span id="save-key-txt">บันทึก</span></button>
+        </div>
+        <div class="pw-key-ok" id="key-ok">✓ <span id="key-ok-txt">บันทึก Key แล้ว</span></div>
+        <div class="ai-note" id="key-warn" style="padding:2px 14px 0;font-size:11px;color:var(--gold)">⚠️ Key เก็บแบบไม่เข้ารหัส — อย่าใช้บนคอมพิวเตอร์สาธารณะ</div>
+        <div class="pw-run-row">
+          <button class="pw-run-btn" id="run-btn" onclick="runPower()">
+            <span id="run-icon">▶</span><span id="run-txt">รันเลย</span>
+          </button>
+          <div class="pw-model-note" id="model-note">claude-haiku-4-5 — เร็ว ประหยัด</div>
+        </div>
+        <div class="pw-resp" id="pw-resp">
+          <div class="pw-resp-hdr">
+            <span class="resp-dot" id="resp-dot"></span>
+            <span id="resp-hdr-txt">กำลังคิด…</span>
+          </div>
+          <div class="pw-resp-text" id="resp-text"></div>
+          <button class="pw-copy-resp" id="copy-resp-btn" onclick="copyResp()"></button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Saved -->
+  <div class="saved-wrap">
+    <div class="sec-lbl-bare" id="saved-lbl">Prompt ที่บันทึกไว้</div>
+    <div class="saved-list" id="saved-list"></div>
+  </div>
+</div>
+<!-- Modal -->
+<div class="modal-overlay" id="modal">
+  <div class="modal">
+    <h3 id="modal-title">บันทึก Prompt นี้</h3>
+    <p id="modal-sub">ตั้งชื่อให้จำง่าย</p>
+    <input type="text" id="prompt-name" maxlength="60">
+    <div class="modal-actions">
+      <button class="btn-mc" id="modal-cancel" onclick="closeModal()">ยกเลิก</button>
+      <button class="btn-ms" id="modal-save" onclick="savePrompt()">บันทึก ✦</button>
+    </div>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+// ═══════════════════════════════════════════════════════
+// STATE — declared first so all functions can access them
+// ═══════════════════════════════════════════════════════
+const FIELDS = ['role','context','task','constraints','output'];
+let lang = 'th';
+let confidence = 0.80;
+let activeFlags = [];
+let selLen = 'short';
+let selFmts = [];
+let priorities = { urgency: false, risk: false };
+let saved = JSON.parse(localStorage.getItem('pcl_v6') || '[]');
+let toastTimer = null;
+let powerAI = 'claude';
+let powerOpen = false;
+const KEYS = { claude:'', gpt:'' };
+['claude','gpt'].forEach(k => { const v = localStorage.getItem('pcl_key_'+k); if(v) KEYS[k]=v; });
+
+// ═══════════════════════════════════════════════════════
+// THEME — light/dark toggle
+// ═══════════════════════════════════════════════════════
+// How this works:
+// 1. We check localStorage for a saved preference ('pcl_theme')
+// 2. If none saved, default to 'light'
+// 3. We set data-theme="dark" on <html> to activate the
+//    [data-theme="dark"] CSS block we defined earlier
+// 4. The button icon swaps: ☀️ = light mode (click for dark), 🌙 = dark mode (click for light)
+(function initTheme(){
+  const saved = localStorage.getItem('pcl_theme') || 'light';
+  if(saved==='dark') document.documentElement.setAttribute('data-theme','dark');
+  updateThemeBtn();
+})();
+function toggleTheme(){
+  const isDark = document.documentElement.getAttribute('data-theme')==='dark';
+  if(isDark) document.documentElement.removeAttribute('data-theme');
+  else document.documentElement.setAttribute('data-theme','dark');
+  localStorage.setItem('pcl_theme', isDark?'light':'dark');
+  updateThemeBtn();
+}
+function updateThemeBtn(){
+  const btn=document.getElementById('theme-btn'); if(!btn) return;
+  const isDark = document.documentElement.getAttribute('data-theme')==='dark';
+  btn.textContent = isDark ? '🌙' : '☀️';
+  btn.title = isDark ? 'Switch to light mode' : 'Switch to dark mode';
+}
+
+// ═══════════════════════════════════════════════════════
+// TRANSLATIONS
+// ═══════════════════════════════════════════════════════
+const T = {
+  th: {
+    logoSub:'สร้าง Prompt ที่ดีกว่า', langBtn:'EN',
+    eyebrow:'เครื่องมือฟรี · ใช้งานง่าย',
+    introTitle:'เขียน Prompt ให้ AI <span>ฉลาดขึ้น</span>',
+    introSub:'กรอกข้อมูลทีละขั้นตอน — แค่ 3 ขั้นแรกก็พอเริ่มได้',
+    req:'จำเป็น', opt:'ไม่บังคับ', eg:'✦ ดูตัวอย่าง',
+    steps:[
+      {t:'🎭 บทบาท — ให้ AI เป็นใคร?',h:'ยิ่งกำหนดบทบาทละเอียดและเชี่ยวชาญมากเท่าไหร่ AI จะตอบได้แม่นยำและมีประโยชน์มากขึ้นเท่านั้น',p:'เช่น คุณเป็นที่ปรึกษาการตลาด...',e:'คุณเป็นที่ปรึกษาการตลาดที่มีประสบการณ์มากกว่า 10 ปีด้านธุรกิจขนาดเล็กและโซเชียลมีเดีย'},
+      {t:'📋 บริบท — สถานการณ์คืออะไร?',h:'บอกพื้นหลังให้ AI รู้',p:'เช่น ฉันมีร้านกาแฟ มีผู้ติดตาม 500 คน...',e:'ฉันมีร้านกาแฟเล็กๆ ในกรุงเทพฯ มีผู้ติดตาม Instagram 500 คน อยากเพิ่มยอดขายโดยไม่ใช้งบโฆษณา'},
+      {t:'✅ งาน — อยากให้ AI ทำอะไร?',h:'ระบุให้ชัด 1 คำสั่งดีกว่าหลายคำสั่งคลุมเครือ',p:'เช่น ช่วยคิดไอเดียโพสต์ 5 ไอเดีย...',e:'ช่วยคิดไอเดียโพสต์ Instagram 5 ไอเดียสัปดาห์นี้ พร้อมแคปชั่นตั้งต้นและแฮชแท็ก'},
+      {t:'🚧 ข้อจำกัด — ห้ามทำอะไร?',h:'บอก AI ว่าห้ามทำอะไร และไม่ควรทำอะไร เพื่อให้คำตอบคมชัดและตรงใจมากขึ้น',p:'เช่น ห้ามแนะนำโฆษณา ใช้ภาษาเป็นกันเอง...',e:'ห้ามแนะนำการซื้อโฆษณา ใช้ภาษาเป็นกันเองไม่ทางการ หลีกเลี่ยงประโยคซ้ำซาก'},
+      {t:'📐 รูปแบบ — คำตอบควรเป็นยังไง?',h:'บอก AI ว่าอยากได้คำตอบแบบไหน และเลือกความยาวด้านล่าง',p:'เช่น ตอบเป็นรายการ แต่ละข้อมีแคปชั่น...',e:'ตอบเป็นรายการหมายเลข แต่ละข้อมีแคปชั่น 1 ประโยค + แฮชแท็ก 3 ตัว ไม่เกิน 80 คำ'},
+    ],
+    s6t:'📝 สรุป — เลือกรูปแบบคำตอบ', s6h:'เลือกว่าอยากให้ AI ตอบเป็นรูปแบบอะไร',
+    lenLbl:'ความยาว', fmtLbl:'รูปแบบ',
+    lens:[
+      {k:'short',i:'⚡',l:'Short',d:'3–5 ประโยค อ่านได้ใน 30 วิ',p:'ตอบสั้นมาก ไม่เกิน 3–5 ประโยค เน้นประเด็นสำคัญเท่านั้น'},
+      {k:'standard',i:'📄',l:'มาตรฐาน',d:'ครบถ้วนแต่ไม่ยืดเยื้อ',p:'ตอบให้ครบถ้วนแต่กระชับ ไม่ยืดเยื้อ'},
+      {k:'detailed',i:'📚',l:'ละเอียด',d:'ครบทุกแง่มุม พร้อมตัวอย่าง',p:'ตอบละเอียดครบถ้วน พร้อมคำอธิบายและตัวอย่าง'},
+    ],
+    fmts:[
+      {k:'bullets',i:'•',l:'Bullet',d:'รายการหัวข้อ อ่านง่าย',p:'ตอบเป็น bullet points • เรียงตามลำดับความสำคัญ'},
+      {k:'numbered',i:'①',l:'ลำดับ',d:'รายการหมายเลข เหมาะกับขั้นตอน',p:'ตอบเป็นรายการหมายเลข เรียงจากสำคัญสุด'},
+      {k:'table',i:'⊞',l:'ตาราง',d:'เปรียบเทียบหรือข้อมูลหลายมิติ',p:'ตอบเป็นตาราง Markdown พร้อม header ชัดเจน'},
+      {k:'para',i:'¶',l:'ย่อหน้า',d:'อธิบายเชิงลึก เชื่อมโยงความคิด',p:'ตอบเป็นย่อหน้า เชื่อมโยงความคิด อธิบายเหตุผลชัดเจน'},
+      {k:'graph',i:'📈',l:'กราฟ',d:'ข้อมูลตัวเลขหรือแนวโน้ม',p:'นำเสนอข้อมูลเป็นกราฟ ASCII หรือระบุแกน X/Y พร้อมจุดข้อมูลสำคัญ'},
+      {k:'dashboard',i:'📊',l:'Dashboard',d:'ภาพรวมตัวชี้วัดหลายตัว',p:'นำเสนอเป็น Dashboard: ตัวชี้วัดหลัก / สถานะ / แนวโน้ม / การแจ้งเตือน'},
+      {k:'dtree',i:'🌿',l:'Decision Tree',d:'แยกสาขาตามเงื่อนไข',p:'นำเสนอเป็น Decision Tree: ถ้า [เงื่อนไข] → [ผลลัพธ์]'},
+      {k:'slides',i:'🖼️',l:'Presentation',d:'โครงสร้างสไลด์',p:'จัดเป็นสไลด์: Slide 1: [ชื่อ] — bullet 3–5 ข้อต่อสไลด์'},
+      {k:'custom',i:'✏️',l:'กำหนดเอง',d:'ระบุรูปแบบที่ต้องการเอง',p:null},
+    ],
+    custP:'เช่น ตอบเป็น 3 ส่วน: สรุป / เหตุผล / ขั้นตอนถัดไป',
+    fmtDefault:'ไม่มีรูปแบบที่เลือก — ค่าเริ่มต้น: Bullet',
+    summaryDefault:'สรุปประเด็นสำคัญเป็น bullet points ก่อน แล้วค่อยตอบอย่างละเอียดด้านล่าง',
+    summaryInstruction:'สรุปก่อนในรูปแบบต่อไปนี้:',
+    summaryTail:'จากนั้นให้ตอบอย่างละเอียดด้านล่าง',
+    setTitle:'ตั้งค่าขั้นสูง', setSub:'ความมั่นใจ · Flag · ความเร่งด่วน · ความเสี่ยง',
+    confLbl:'ระดับความมั่นใจ', confMain:'ขั้นต่ำที่ยอมรับได้', confSub:'ถ้า AI ไม่มั่นใจเกินนี้ให้บอกด้วย',
+    flagsLbl:'Flag ผลลัพธ์',
+    flags:[
+      {k:'inferred',c:'g',n:'ติดป้าย [INFERRED]',d:'เมื่อ AI อนุมานข้อมูลที่ไม่ได้บอก',p:'ติดป้าย [INFERRED] ทุกครั้งที่อนุมานข้อมูลที่ไม่ได้ระบุ'},
+      {k:'unverifiable',c:'b',n:'ติดป้าย [UNVERIFIABLE]',d:'เมื่อข้อมูลตรวจสอบไม่ได้',p:'ติดป้าย [UNVERIFIABLE] กับข้อมูลที่ตรวจสอบไม่ได้'},
+      {k:'lowinsight',c:'r',n:'แจ้งเมื่อข้อมูลตื้น',d:'ให้บอกถ้า AI ไม่มีข้อมูลเพียงพอ',p:'หากส่วนใดข้อมูลไม่เพียงพอ ให้ระบุว่า "ข้อมูลตื้น กรุณาเพิ่มบริบท"'},
+      {k:'assumptions',c:'o',n:'ระบุข้อสมมติ',d:'ให้แจ้งสิ่งที่ AI สมมติก่อนตอบ',p:'ระบุข้อสมมติทั้งหมดก่อนสรุปคำตอบ'},
+    ],
+    priLbl:'ติดป้ายลำดับความสำคัญ',
+    pris:[
+      {k:'urgency',cls:'urg',i:'🔴',n:'ความเร่งด่วน',d:'AI ระบุว่าแต่ละข้อเร่งด่วนแค่ไหน',p:l=>`ระบุระดับความเร่งด่วนของแต่ละข้อ: 🔴 วิกฤต / 🟠 สูง / 🟡 กลาง / 🟢 ต่ำ${l?' โฟกัสระดับ: '+l:''}`},
+      {k:'risk',cls:'risk',i:'⚠️',n:'ความเสี่ยง',d:'AI ประเมินความเสี่ยงของแต่ละข้อ',p:l=>`ประเมินความเสี่ยงของแต่ละข้อ: 🔴 สูงมาก / 🟠 สูง / 🟡 กลาง / 🟢 ต่ำ พร้อมอธิบายสั้นๆ${l?' โฟกัสระดับ: '+l:''}`},
+    ],
+    prevLbl:'Prompt สำเร็จรูปของคุณ', prevEmpty:'กรอกข้อมูลด้านบนเพื่อดู Prompt ✦',
+    copyBtn:'📋 คัดลอก', saveBtn:'💾 บันทึก', clrBtn:'↺ ล้าง',
+    copyGuide:'📌 คัดลอก Prompt แล้วนำไปวางใน AI ที่คุณใช้ได้เลย หรือกดปุ่มด้านล่างเพื่อเปิดอัตโนมัติ',
+    aiLbl:'เปิดใน AI ที่คุณชอบ',
+    aiNote:'Claude และ ChatGPT เปิดพร้อม Prompt อัตโนมัติ — Gemini คัดลอกให้แล้ว วางได้เลย',
+    savedLbl:'Prompt ที่บันทึกไว้',
+    noSaved:'ยังไม่มี Prompt ที่บันทึกไว้<br>สร้างแล้วกด <strong>บันทึก</strong>',
+    loadBtn:'↑ โหลด', cpBtn:'📋', delBtn:'✕',
+    modalTitle:'บันทึก Prompt นี้', modalSub:'ตั้งชื่อให้จำง่าย',
+    modalPH:'เช่น ไอเดีย Instagram ร้านกาแฟ',
+    modalSave:'บันทึก ✦', modalCancel:'ยกเลิก',
+    toastCopied:'✓ คัดลอกแล้ว!', toastSaved:'✓ บันทึกแล้ว!',
+    toastLoaded:'✓ โหลดแล้ว', toastDeleted:'ลบแล้ว',
+    toastLaunch:'✓ คัดลอกแล้ว! กำลังเปิด…',
+    toastEmpty:'กรอกข้อมูลก่อนนะ',
+    pLabels:{role:'[บทบาท]',context:'[บริบท]',task:'[งาน]',constraints:'[ข้อจำกัด]',output:'[รูปแบบ]',summary:'[สรุป]',conf:'[ความมั่นใจ]',flags:'[Flag]',pri:'[ลำดับความสำคัญ]'},
+    confP:v=>`ถ้าส่วนใดมีความมั่นใจต่ำกว่า ${v} ให้ระบุและอธิบายก่อนสรุป`,
+    pwLbl:'รันใน Tool นี้เลย', pwBadge:'POWER',
+    saveKeyTxt:'บันทึก', keyOkTxt:'บันทึก Key แล้ว (เก็บในเครื่องคุณเท่านั้น)',
+    keyWarn:'⚠️ Key เก็บแบบไม่เข้ารหัส — อย่าใช้บนคอมพิวเตอร์สาธารณะ',
+    keyPH:{claude:'sk-ant-api… (Anthropic)',gpt:'sk-… (OpenAI)'},
+    runTxt:'รันเลย',
+    modelNotes:{claude:'claude-haiku-4-5 — เร็ว ประหยัด',gpt:'gpt-4o-mini — เร็ว ประหยัด'},
+    respHdr:'กำลังคิด…', respDone:'คำตอบ', copyRespTxt:'📋 คัดลอกคำตอบ',
+    errNoKey:'ใส่ API Key ก่อนนะ', errApi:'เกิดข้อผิดพลาด: ',
+    confDescs:{'0.50':'<b>0.50</b> — ผ่อนคลาย: เหมาะการระดมไอเดีย','0.55':'<b>0.55</b> — ผ่อนคลาย: เหมาะการระดมไอเดีย','0.60':'<b>0.60</b> — ปานกลาง: แจ้งเมื่อไม่มั่นใจมาก','0.65':'<b>0.65</b> — ปานกลาง: แจ้งเมื่อไม่มั่นใจมาก','0.70':'<b>0.70</b> — ค่อนข้างเข้มงวด: แจ้งข้อมูลสำคัญ','0.75':'<b>0.75</b> — ค่อนข้างเข้มงวด: แจ้งข้อมูลสำคัญ','0.80':'<b>0.80</b> — มาตรฐาน: แนะนำค่าเริ่มต้น','0.85':'<b>0.85</b> — เข้มงวด: งานความแม่นยำสูง','0.90':'<b>0.90</b> — เข้มงวดมาก: งานสำคัญ','0.95':'<b>0.95</b> — เข้มงวดมาก: งานสำคัญ','1.00':'<b>1.00</b> — สูงสุด: แจ้งเกือบทุกส่วน'},
+  },
+  en: {
+    logoSub:'Build better AI prompts', langBtn:'TH',
+    eyebrow:'Free tool · Beginner friendly',
+    introTitle:'Write <span>smarter</span> AI prompts',
+    introSub:'Fill in the steps — just the first 3 are enough to start.',
+    req:'Required', opt:'Optional', eg:'✦ Try an example',
+    steps:[
+      {t:'🎭 Role — Who should AI be?',h:'The more advanced and specific the role you give AI, the more precise and useful the answer will be.',p:'e.g. You are an experienced marketing consultant...',e:'You are an experienced marketing consultant with 10+ years specialising in small businesses and social media growth.'},
+      {t:'📋 Context — What is your situation?',h:'Give AI the background.',p:'e.g. I run a small café in Bangkok with 500 Instagram followers...',e:'I run a small café in Bangkok with 500 Instagram followers. I want to grow organically without paid ads.'},
+      {t:'✅ Task — What do you want AI to do?',h:'Be specific. One clear action works best.',p:'e.g. Give me 5 Instagram post ideas with captions...',e:'Give me 5 Instagram post ideas for this week with a caption starter and hashtag suggestions for each.'},
+      {t:'🚧 Limits — What should AI avoid?',h:'Telling AI what NOT to do sharpens output.',p:'e.g. No paid ads. Keep it casual. Avoid clichés...',e:'Do not suggest paid ads. Keep the tone casual and friendly. Avoid overused phrases.'},
+      {t:'📐 Format — How should the answer look?',h:'Tell AI how to present the result — then choose a length below.',p:'e.g. Numbered list, each item: one caption + 3 hashtags...',e:'Numbered list. Each item: one caption starter + 3 hashtags. Max 80 words each.'},
+    ],
+    s6t:'📝 Summary — Choose output format', s6h:'Pick how you want AI to structure the answer.',
+    lenLbl:'Length', fmtLbl:'Format',
+    lens:[
+      {k:'short',i:'⚡',l:'Short',d:'3–5 sentences. Readable in 30 seconds.',p:'Reply in max 3–5 sentences. Most important points only.'},
+      {k:'standard',i:'📄',l:'Standard',d:'Complete but not padded.',p:'Reply thoroughly but concisely. No padding.'},
+      {k:'detailed',i:'📚',l:'Detailed',d:'Full coverage with examples.',p:'Reply in full detail with clear explanations and examples.'},
+    ],
+    fmts:[
+      {k:'bullets',i:'•',l:'Bullet list',d:'Easy to scan.',p:'Format as bullet points (•) ordered by importance.'},
+      {k:'numbered',i:'①',l:'Numbered',d:'Ordered list. Best for steps.',p:'Format as numbered list from most to least important.'},
+      {k:'table',i:'⊞',l:'Table',d:'Best for comparisons.',p:'Format as Markdown table with clear headers and rows.'},
+      {k:'para',i:'¶',l:'Paragraphs',d:'In-depth explanations.',p:'Format as connected paragraphs with clear reasoning.'},
+      {k:'graph',i:'📈',l:'Graph',d:'Numerical data or trends.',p:'Present as ASCII chart or describe X/Y axes with key data points labelled.'},
+      {k:'dashboard',i:'📊',l:'Dashboard',d:'Multi-metric overview.',p:'Present as Dashboard: Key Metrics / Status / Trend / Alerts.'},
+      {k:'dtree',i:'🌿',l:'Decision Tree',d:'Branching logic.',p:'Present as Decision Tree: If [condition] → [outcome].'},
+      {k:'slides',i:'🖼️',l:'Presentation',d:'Slide structure.',p:'Format as slides: Slide 1: [Title] — 3–5 bullet points per slide.'},
+      {k:'custom',i:'✏️',l:'Custom',d:'Specify your own format.',p:null},
+    ],
+    custP:'e.g. 3 sections: Summary / Reasoning / Next step',
+    fmtDefault:'None selected — default: Bullet summary',
+    summaryDefault:'Provide a bullet point summary of the key points first, then give the full detailed answer below.',
+    summaryInstruction:'Provide a summary first in the following format(s):',
+    summaryTail:'Then give the full detailed answer below.',
+    setTitle:'Advanced Settings', setSub:'Confidence · Flags · Urgency · Risk',
+    confLbl:'Confidence Threshold', confMain:'Minimum confidence level', confSub:'AI will flag sections below this value',
+    flagsLbl:'Output Flags',
+    flags:[
+      {k:'inferred',c:'g',n:'Tag [INFERRED]',d:'When AI infers info you did not provide',p:'Tag all inferences with [INFERRED].'},
+      {k:'unverifiable',c:'b',n:'Tag [UNVERIFIABLE]',d:'When info cannot be verified',p:'Tag unverifiable claims with [UNVERIFIABLE].'},
+      {k:'lowinsight',c:'r',n:'Flag shallow areas',d:'When AI lacks enough info',p:'If any section lacks data, state: "Insight shallow — add more context."'},
+      {k:'assumptions',c:'o',n:'State assumptions',d:'AI lists all assumptions first',p:'State all assumptions explicitly before concluding.'},
+    ],
+    priLbl:'Priority Flags',
+    pris:[
+      {k:'urgency',cls:'urg',i:'🔴',n:'Urgency',d:'AI rates how urgent each point is',p:l=>`Rate urgency of each point: 🔴 Critical / 🟠 High / 🟡 Medium / 🟢 Low${l?'. Focus on level: '+l:''}`},
+      {k:'risk',cls:'risk',i:'⚠️',n:'Risk',d:'AI identifies and rates risk of each item',p:l=>`Rate risk of each point: 🔴 Critical / 🟠 High / 🟡 Medium / 🟢 Low with brief reason${l?'. Focus on level: '+l:''}`},
+    ],
+    prevLbl:'Your Prompt Preview', prevEmpty:'Fill in the steps above to see your prompt ✦',
+    copyBtn:'📋 Copy', saveBtn:'💾 Save', clrBtn:'↺ Clear',
+    copyGuide:'📌 Copy your prompt and paste it into any AI platform — or tap a button below to open it automatically.',
+    aiLbl:'Send to your AI tool',
+    aiNote:'Claude and ChatGPT open with your prompt pre-filled. Gemini — prompt is copied, just paste and send.',
+    savedLbl:'Saved Prompts',
+    noSaved:'No saved prompts yet.<br>Build one and click <strong>Save</strong>.',
+    loadBtn:'↑ Load', cpBtn:'📋', delBtn:'✕',
+    modalTitle:'Save this prompt', modalSub:'Give it a name to find it later.',
+    modalPH:'e.g. Instagram ideas for my café',
+    modalSave:'Save ✦', modalCancel:'Cancel',
+    toastCopied:'✓ Copied!', toastSaved:'✓ Saved!',
+    toastLoaded:'✓ Loaded', toastDeleted:'Deleted',
+    toastLaunch:'✓ Copied! Opening…',
+    toastEmpty:'Fill in at least one step first.',
+    pLabels:{role:'[ROLE]',context:'[CONTEXT]',task:'[TASK]',constraints:'[CONSTRAINTS]',output:'[OUTPUT FORMAT]',summary:'[SUMMARY FORMAT]',conf:'[CONFIDENCE]',flags:'[OUTPUT FLAGS]',pri:'[PRIORITY FLAGS]'},
+    confP:v=>`If any part has confidence below ${v}, flag it and explain why before concluding.`,
+    pwLbl:'Run inside this tool', pwBadge:'POWER',
+    saveKeyTxt:'Save', keyOkTxt:'Key saved (stored on your device only)',
+    keyWarn:'⚠️ Key stored unencrypted — don\'t use on shared computers',
+    keyPH:{claude:'sk-ant-api… (Anthropic)',gpt:'sk-… (OpenAI)'},
+    runTxt:'Run now',
+    modelNotes:{claude:'claude-haiku-4-5 — fast & affordable',gpt:'gpt-4o-mini — fast & affordable'},
+    respHdr:'Thinking…', respDone:'Response', copyRespTxt:'📋 Copy response',
+    errNoKey:'Please enter your API Key first', errApi:'Error: ',
+    confDescs:{'0.50':'<b>0.50</b> — Relaxed: Good for brainstorming.','0.55':'<b>0.55</b> — Relaxed: Good for brainstorming.','0.60':'<b>0.60</b> — Moderate: Flags when quite unsure.','0.65':'<b>0.65</b> — Moderate: Flags when quite unsure.','0.70':'<b>0.70</b> — Careful: Flags uncertain key areas.','0.75':'<b>0.75</b> — Careful: Flags uncertain key areas.','0.80':'<b>0.80</b> — Standard: Recommended default.','0.85':'<b>0.85</b> — Strict: Good for accuracy-critical work.','0.90':'<b>0.90</b> — Very strict: Best for important decisions.','0.95':'<b>0.95</b> — Very strict: Best for important decisions.','1.00':'<b>1.00</b> — Maximum: Flags almost everything.'},
+  }
+};
+
+// ═══════════════════════════════════════════════════════
+// LANGUAGE
+// ═══════════════════════════════════════════════════════
+function toggleLang() { lang = lang==='th'?'en':'th'; applyLang(); renderPreview(); }
+
+function applyLang() {
+  const t = T[lang];
+  document.documentElement.lang = lang;
+  document.getElementById('logo-sub').textContent = t.logoSub;
+  document.getElementById('lang-btn').textContent = t.langBtn;
+  document.getElementById('eyebrow').textContent = t.eyebrow;
+  document.getElementById('intro-title').innerHTML = t.introTitle;
+  document.getElementById('intro-sub').textContent = t.introSub;
+  renderSteps();
+  document.getElementById('s6-title').textContent = t.s6t;
+  document.getElementById('s6-hint').textContent = t.s6h;
+  document.getElementById('s6-badge').textContent = t.opt;
+  document.getElementById('fmt-lbl').textContent = t.fmtLbl;
+  document.getElementById('cust-input').placeholder = t.custP;
+  renderLenChips(); renderFmtChips();
+  document.getElementById('set-title').textContent = t.setTitle;
+  document.getElementById('set-sub').textContent = t.setSub;
+  document.getElementById('conf-lbl').textContent = t.confLbl;
+  document.getElementById('conf-main').textContent = t.confMain;
+  document.getElementById('conf-sub').textContent = t.confSub;
+  document.getElementById('conf-desc-box').innerHTML = t.confDescs[confidence.toFixed(2)] || '';
+  document.getElementById('flags-lbl').textContent = t.flagsLbl;
+  document.getElementById('pri-lbl').textContent = t.priLbl;
+  renderFlags(); renderPriGrid();
+  document.getElementById('prev-lbl').textContent = t.prevLbl;
+  document.getElementById('copy-btn').textContent = t.copyBtn;
+  document.getElementById('save-btn').textContent = t.saveBtn;
+  document.getElementById('clr-btn').textContent = t.clrBtn;
+  document.getElementById('copy-guide').textContent = t.copyGuide;
+  document.getElementById('ai-lbl').textContent = t.aiLbl;
+  document.getElementById('ai-note').textContent = t.aiNote;
+  document.getElementById('saved-lbl').textContent = t.savedLbl;
+  document.getElementById('modal-title').textContent = t.modalTitle;
+  document.getElementById('modal-sub').textContent = t.modalSub;
+  document.getElementById('prompt-name').placeholder = t.modalPH;
+  document.getElementById('modal-save').textContent = t.modalSave;
+  document.getElementById('modal-cancel').textContent = t.modalCancel;
+  document.getElementById('pw-lbl').textContent = t.pwLbl;
+  document.getElementById('pw-badge').textContent = t.pwBadge;
+  document.getElementById('save-key-txt').textContent = t.saveKeyTxt;
+  document.getElementById('key-ok-txt').textContent = t.keyOkTxt;
+  document.getElementById('run-txt').textContent = t.runTxt;
+  document.getElementById('model-note').textContent = t.modelNotes[powerAI];
+  document.getElementById('copy-resp-btn').textContent = t.copyRespTxt;
+  updateKeyPlaceholder();
+  renderSaved();
+}
+
+// ═══════════════════════════════════════════════════════
+// STEPS 1–5
+// ═══════════════════════════════════════════════════════
+function renderSteps() {
+  const t = T[lang];
+  const vals = {};
+  FIELDS.forEach(f => { const el=document.getElementById(f); if(el) vals[f]=el.value; });
+  document.getElementById('steps-container').innerHTML = FIELDS.map((k,i) => {
+    const s=t.steps[i], v=vals[k]||'', opt=i>=3;
+    return `<div class="step-card${v.trim()?' has-content':''}" id="card-${k}">
+      <div class="step-hdr">
+        <div class="step-num${v.trim()?' filled':''}" id="num-${k}">${i+1}</div>
+        <div class="step-info"><div class="step-title">${s.t}</div><div class="step-hint">${s.h}</div></div>
+        <span class="step-badge ${opt?'badge-opt':'badge-req'}">${opt?t.opt:t.req}</span>
+      </div>
+      <div class="step-body">
+        <textarea id="${k}" rows="2" placeholder="${esc(s.p)}" oninput="onInput('${k}')">${esc(v)}</textarea>
+        <span class="example-tag" onclick="fillEg('${k}')">${t.eg}</span>
+        ${i===4 ? `<div class="row-lbl" style="margin-top:12px" id="len-lbl">${t.lenLbl}</div><div class="chip-group" id="len-chips"></div><div class="chip-desc" id="len-desc"></div>` : ''}
+      </div>
+    </div>`;
+  }).join('');
+  FIELDS.forEach(f => { const el=document.getElementById(f); if(el&&el.value) autoH(el); });
+}
+
+function onInput(id) {
+  const el=document.getElementById(id); autoH(el);
+  const v=el.value.trim();
+  document.getElementById('num-'+id).classList.toggle('filled',!!v);
+  document.getElementById('card-'+id).classList.toggle('has-content',!!v);
+  renderPreview();
+}
+function autoH(el) { el.style.height='auto'; el.style.height=el.scrollHeight+'px'; }
+function fillEg(id) { const i=FIELDS.indexOf(id); document.getElementById(id).value=T[lang].steps[i].e; onInput(id); }
+
+// ═══════════════════════════════════════════════════════
+// STEP 6 — LENGTH & FORMAT CHIPS
+// ═══════════════════════════════════════════════════════
+function renderLenChips() {
+  const t=T[lang];
+  document.getElementById('len-chips').innerHTML = t.lens.map(l =>
+    `<div class="chip${selLen===l.k?' sl':''}" onclick="selLength('${l.k}')"><span class="chip-dot"></span>${l.i} ${l.l}</div>`
+  ).join('');
+  document.getElementById('len-desc').textContent = (t.lens.find(x=>x.k===selLen)||{}).d||'';
+}
+function selLength(k) { selLen=k; renderLenChips(); renderPreview(); }
+
+function renderFmtChips() {
+  const t=T[lang];
+  document.getElementById('fmt-chips').innerHTML = t.fmts.map(f =>
+    `<div class="chip${selFmts.includes(f.k)?' sf':''}" onclick="toggleFormat('${f.k}')"><span class="chip-dot"></span>${f.i} ${f.l}</div>`
+  ).join('');
+  document.getElementById('fmt-desc').textContent = selFmts.length===0 ? t.fmtDefault : selFmts.filter(k=>k!=='custom').map(k=>(t.fmts.find(x=>x.k===k)||{}).l||'').join(' + ');
+  document.getElementById('cust-wrap').classList.toggle('show', selFmts.includes('custom'));
+}
+function toggleFormat(k) {
+  if(selFmts.includes(k)) { selFmts=selFmts.filter(x=>x!==k); }
+  else { selFmts.push(k); }
+  renderFmtChips(); renderPreview();
+}
+
+// ═══════════════════════════════════════════════════════
+// SETTINGS
+// ═══════════════════════════════════════════════════════
+function toggleSettings() { document.getElementById('settings-panel').classList.toggle('open'); }
+
+function updateConf() {
+  const v = parseFloat(document.getElementById('conf-slider').value).toFixed(2);
+  confidence = parseFloat(v);
+  document.getElementById('conf-val').textContent = v;
+  document.getElementById('conf-desc-box').innerHTML = T[lang].confDescs[v] || `<b>${v}</b>`;
+  renderPreview();
+}
+
+function renderFlags() {
+  const t=T[lang];
+  document.getElementById('flags-grid').innerHTML = t.flags.map(f => {
+    const on=activeFlags.includes(f.k);
+    return `<div class="flag-item${on?' on-'+f.c:''}" onclick="toggleFlag('${f.k}','${f.c}',this)">
+      <div class="flag-chk">✓</div>
+      <div><div class="flag-name">${f.n}</div><div class="flag-desc">${f.d}</div></div>
+    </div>`;
+  }).join('');
+}
+function toggleFlag(k,c,el) {
+  if(activeFlags.includes(k)){activeFlags=activeFlags.filter(x=>x!==k);el.classList.remove('on-'+c);}
+  else{activeFlags.push(k);el.classList.add('on-'+c);}
+  renderPreview();
+}
+
+function renderPriGrid() {
+  const t=T[lang];
+  document.getElementById('pri-grid').innerHTML = t.pris.map(p => {
+    const on=priorities[p.k]===true;
+    return `<div class="pflag${on?' on-'+p.cls:''}" id="pflag-${p.k}" onclick="togglePri('${p.k}')">
+      <div class="pflag-hdr"><span class="pflag-icon">${p.i}</span><span class="pflag-name">${p.n}</span></div>
+      <div class="pflag-desc">${p.d}</div>
+    </div>`;
+  }).join('');
+}
+function togglePri(key) {
+  priorities[key] = !priorities[key];
+  renderPriGrid(); renderPreview();
+}
+
+// ═══════════════════════════════════════════════════════
+// PROMPT BUILD & PREVIEW
+// ═══════════════════════════════════════════════════════
+function buildSummary() {
+  const t=T[lang];
+  const len=t.lens.find(x=>x.k===selLen);
+  const parts=[];
+  if(len) parts.push(len.p);
+  // Summary format instruction — always injected
+  const customVal=(document.getElementById('cust-input')||{}).value?.trim()||'';
+  const activeFmts=selFmts.filter(k=>k!=='custom');
+  const fmtLabels=activeFmts.map(k=>(t.fmts.find(x=>x.k===k)||{}).p||'').filter(Boolean);
+  if(selFmts.includes('custom')&&customVal) fmtLabels.push(customVal);
+  if(fmtLabels.length>0){
+    parts.push(t.summaryInstruction+' '+fmtLabels.join(', ')+'. '+t.summaryTail);
+  } else {
+    parts.push(t.summaryDefault);
+  }
+  return parts.join(' ');
+}
+
+function buildPriority() {
+  const t=T[lang];
+  return t.pris.filter(p=>priorities[p.k]===true).map(p=>'• '+p.p('')).join('\n');
+}
+
+function buildPrompt() {
+  const t=T[lang];
+  const parts=FIELDS.map(f=>({lb:t.pLabels[f],v:(document.getElementById(f)||{}).value?.trim()||''})).filter(p=>p.v);
+  if(!parts.length) return '';
+  let txt=parts.map(p=>`${p.lb}\n${p.v}`).join('\n\n');
+  const sp=buildSummary(); if(sp) txt+=`\n\n${t.pLabels.summary}\n${sp}`;
+  txt+=`\n\n${t.pLabels.conf}\n${t.confP(confidence.toFixed(2))}`;
+  if(activeFlags.length){const fd=t.flags.reduce((a,f)=>{a[f.k]=f.p;return a},{});txt+=`\n\n${t.pLabels.flags}\n${activeFlags.map(f=>'• '+fd[f]).join('\n')}`;}
+  const pp=buildPriority(); if(pp) txt+=`\n\n${t.pLabels.pri}\n${pp}`;
+  return txt;
+}
+
+function hasContent() { return FIELDS.some(f=>(document.getElementById(f)||{}).value?.trim()); }
+
+function renderPreview() {
+  const t=T[lang];
+  const box=document.getElementById('preview');
+  const parts=FIELDS.map(f=>({lb:t.pLabels[f],v:(document.getElementById(f)||{}).value?.trim()||''})).filter(p=>p.v);
+  if(!parts.length){box.innerHTML=`<span class="p-empty">${t.prevEmpty}</span>`;return;}
+  let html=parts.map(p=>`<span class="ptag">${esc(p.lb)}</span>\n${esc(p.v)}`).join('\n\n');
+  const sp=buildSummary();
+  if(sp){
+    const lo=t.lens.find(x=>x.k===selLen);
+    const fmtLabels=selFmts.length===0?'Bullet (default)':selFmts.map(k=>k==='custom'?((document.getElementById('cust-input')||{}).value?.trim()||'Custom'):(t.fmts.find(x=>x.k===k)||{}).l||'').join(' + ');
+    html+=`\n\n<span class="ptag-s">${esc(t.pLabels.summary)}</span>\n${esc(lo?lo.l:'')} · ${esc(fmtLabels)}`;
+  }
+  html+=`\n\n<span class="ptag-c">${esc(t.pLabels.conf)} — ${esc(t.confP(confidence.toFixed(2)))}</span>`;
+  if(activeFlags.length){const fd=t.flags.reduce((a,f)=>{a[f.k]=f.n;return a},{});html+=`\n<span class="ptag-f">${esc(t.pLabels.flags)} ${esc(activeFlags.map(f=>fd[f]).join(', '))}</span>`;}
+  const pp=buildPriority();
+  if(pp){const an=T[lang].pris.filter(p=>priorities[p.k]===true).map(p=>p.n).join(', ');html+=`\n<span class="ptag-p">${esc(t.pLabels.pri)} ${esc(an)}</span>`;}
+  box.innerHTML=html;
+}
+
+// ═══════════════════════════════════════════════════════
+// ACTIONS
+// ═══════════════════════════════════════════════════════
+function copyPrompt() {
+  const t=T[lang], txt=buildPrompt();
+  if(!txt){showToast(t.toastEmpty);return;}
+  navigator.clipboard.writeText(txt).then(()=>showToast(t.toastCopied)).catch(()=>showToast('⚠️ Copy failed — try HTTPS'));
+}
+
+function launchAI(tool) {
+  const t=T[lang], txt=buildPrompt();
+  if(!txt){showToast(t.toastEmpty);return;}
+  if(txt.length>4000) showToast(lang==='th'?'⚠️ Prompt ยาวเกิน 4000 ตัวอักษร — ถูกตัดให้สั้นลง':'⚠️ Prompt exceeds 4000 chars — truncated for URL');
+  const enc=encodeURIComponent(txt.slice(0,4000));
+  const urls={claude:'https://claude.ai/new?q='+enc, gpt:'https://chatgpt.com/?q='+enc, gemini:'https://gemini.google.com/app'};
+  navigator.clipboard.writeText(txt).catch(()=>{}).finally(()=>{
+    showToast(t.toastLaunch);
+    setTimeout(()=>window.open(urls[tool],'_blank'),250);
+  });
+}
+
+
+// ═══════════════════════════════════════════════════════
+// POWER MODE
+// ═══════════════════════════════════════════════════════
+function togglePower() {
+  powerOpen=!powerOpen;
+  document.getElementById('power-panel').classList.toggle('open',powerOpen);
+  updateKeyPlaceholder(); loadKeyToInput();
+}
+
+function selectAI(ai) {
+  powerAI=ai;
+  ['claude','gpt'].forEach(k=>{
+    document.getElementById('ptab-'+k).className='pw-tab'+(k===ai?' t'+{claude:'c',gpt:'g'}[k]:'');
+  });
+  document.getElementById('model-note').textContent=T[lang].modelNotes[ai];
+  updateKeyPlaceholder(); loadKeyToInput();
+  document.getElementById('pw-resp').classList.remove('show');
+}
+
+function updateKeyPlaceholder() {
+  const el=document.getElementById('key-inp'); if(el) el.placeholder=T[lang].keyPH[powerAI];
+}
+
+function loadKeyToInput() {
+  const el=document.getElementById('key-inp'); if(!el) return;
+  el.value=KEYS[powerAI]?'••••••••••••':'';
+  document.getElementById('key-ok').classList.toggle('show',!!KEYS[powerAI]);
+}
+
+function onKeyType() {
+  const el=document.getElementById('key-inp'); if(el.value.startsWith('••')) el.value='';
+}
+
+function saveKey() {
+  const el=document.getElementById('key-inp'), v=el.value.trim();
+  if(!v||v.startsWith('••')) return;
+  KEYS[powerAI]=v; localStorage.setItem('pcl_key_'+powerAI,v);
+  el.value='••••••••••••';
+  document.getElementById('key-ok').classList.add('show');
+  document.getElementById('key-ok-txt').textContent=T[lang].keyOkTxt;
+  document.getElementById('key-warn').textContent=T[lang].keyWarn;
+  showToast('✓ Key saved');
+}
+
+async function runPower() {
+  const t=T[lang], txt=buildPrompt();
+  if(!txt){showToast(t.toastEmpty);return;}
+  if(!KEYS[powerAI]){showToast(t.errNoKey);return;}
+  const btn=document.getElementById('run-btn');
+  const resp=document.getElementById('pw-resp');
+  const respTxt=document.getElementById('resp-text');
+  const dot=document.getElementById('resp-dot');
+  const hdr=document.getElementById('resp-hdr-txt');
+  const cpBtn=document.getElementById('copy-resp-btn');
+  btn.disabled=true; document.getElementById('run-icon').textContent='⏳';
+  resp.classList.add('show'); respTxt.textContent='';
+  dot.className='resp-dot'; hdr.textContent=t.respHdr; cpBtn.style.display='none';
+  try {
+    if(powerAI==='claude') await streamClaude(txt,respTxt);
+    else await streamGPT(txt,respTxt);
+    dot.className='resp-dot done'; hdr.textContent=t.respDone;
+    cpBtn.textContent=t.copyRespTxt; cpBtn.style.display='inline-block';
+  } catch(err) {
+    respTxt.innerHTML='<span class="pw-err">'+t.errApi+esc(err.message)+'</span>';
+    dot.className='resp-dot done';
+  }
+  btn.disabled=false; document.getElementById('run-icon').textContent='▶';
+}
+
+function appendChunk(el,chunk) { el.textContent+=chunk; el.parentElement.scrollTop=el.parentElement.scrollHeight; }
+
+async function streamClaude(prompt,el) {
+  const res=await fetch('https://api.anthropic.com/v1/messages',{
+    method:'POST',
+    headers:{'Content-Type':'application/json','x-api-key':KEYS.claude,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+    body:JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:1024,stream:true,messages:[{role:'user',content:prompt}]})
+  });
+  if(!res.ok){let msg=res.statusText;try{const j=await res.json();msg=j.error?.message||msg;}catch{}throw new Error(msg);}
+  const reader=res.body.getReader(); const dec=new TextDecoder(); let buf='';
+  while(true){
+    const{done,value}=await reader.read(); if(done) break;
+    buf+=dec.decode(value,{stream:true});
+    const lines=buf.split('\n'); buf=lines.pop();
+    for(const line of lines){
+      if(!line.startsWith('data:')) continue;
+      const d=line.slice(5).trim(); if(d==='[DONE]') continue;
+      try{const j=JSON.parse(d);if(j.type==='content_block_delta'&&j.delta?.text)appendChunk(el,j.delta.text);}catch{}
+    }
+  }
+}
+
+async function streamGPT(prompt,el) {
+  const res=await fetch('https://api.openai.com/v1/chat/completions',{
+    method:'POST',
+    headers:{'Content-Type':'application/json','Authorization':'Bearer '+KEYS.gpt},
+    body:JSON.stringify({model:'gpt-4o-mini',max_tokens:1024,stream:true,messages:[{role:'user',content:prompt}]})
+  });
+  if(!res.ok){let msg=res.statusText;try{const j=await res.json();msg=j.error?.message||msg;}catch{}throw new Error(msg);}
+  const reader=res.body.getReader(); const dec=new TextDecoder(); let buf='';
+  while(true){
+    const{done,value}=await reader.read(); if(done) break;
+    buf+=dec.decode(value,{stream:true});
+    const lines=buf.split('\n'); buf=lines.pop();
+    for(const line of lines){
+      if(!line.startsWith('data:')) continue;
+      const d=line.slice(5).trim(); if(d==='[DONE]') continue;
+      try{const j=JSON.parse(d);const c=j.choices?.[0]?.delta?.content;if(c)appendChunk(el,c);}catch{}
+    }
+  }
+}
+
+function copyResp() {
+  const txt=document.getElementById('resp-text').textContent; if(!txt) return;
+  navigator.clipboard.writeText(txt).then(()=>showToast('✓ Copied!')).catch(()=>showToast('⚠️ Copy failed'));
+}
+
+
+// ═══════════════════════════════════════════════════════
+// SAVE / LOAD
+// ═══════════════════════════════════════════════════════
+function openModal() {
+  const t=T[lang]; if(!hasContent()){showToast(t.toastEmpty);return;}
+  document.getElementById('prompt-name').value='';
+  document.getElementById('modal').classList.add('show');
+  setTimeout(()=>document.getElementById('prompt-name').focus(),200);
+}
+function closeModal() { document.getElementById('modal').classList.remove('show'); }
+document.getElementById('modal').addEventListener('click',e=>{if(e.target.id==='modal')closeModal();});
+document.getElementById('prompt-name').addEventListener('keydown',e=>{if(e.key==='Enter')savePrompt();});
+
+function savePrompt() {
+  const t=T[lang], name=document.getElementById('prompt-name').value.trim();
+  if(!name){document.getElementById('prompt-name').focus();return;}
+  const snap={};FIELDS.forEach(f=>snap[f]=(document.getElementById(f)||{}).value?.trim()||'');
+  saved.unshift({id:Date.now(),name,text:buildPrompt(),snap,confidence,flags:[...activeFlags],selLen,selFmts:[...selFmts],custFmt:(document.getElementById('cust-input')||{}).value?.trim()||'',priorities:{...priorities}});
+  localStorage.setItem('pcl_v6',JSON.stringify(saved));
+  closeModal(); renderSaved(); showToast(t.toastSaved);
+}
+
+function loadPrompt(id) {
+  const t=T[lang], p=saved.find(x=>x.id===id); if(!p) return;
+  FIELDS.forEach(f=>{
+    const el=document.getElementById(f); if(!el) return;
+    el.value=p.snap?.[f]||''; autoH(el);
+    document.getElementById('num-'+f).classList.toggle('filled',!!el.value.trim());
+    document.getElementById('card-'+f).classList.toggle('has-content',!!el.value.trim());
+  });
+  if(p.confidence!==undefined){confidence=p.confidence;document.getElementById('conf-slider').value=confidence;document.getElementById('conf-val').textContent=confidence.toFixed(2);document.getElementById('conf-desc-box').innerHTML=T[lang].confDescs[confidence.toFixed(2)]||'';}
+  if(p.selLen){selLen=p.selLen;renderLenChips();}
+  selFmts=p.selFmts?[...p.selFmts]:(p.selFmt?[p.selFmt]:[]);
+  renderFmtChips();
+  const ci=document.getElementById('cust-input');if(ci&&p.custFmt)ci.value=p.custFmt;
+  if(p.priorities){ priorities={ urgency:!!p.priorities.urgency, risk:!!p.priorities.risk }; }
+  activeFlags=p.flags?[...p.flags]:[];
+  renderFlags(); renderPriGrid(); renderPreview();
+  window.scrollTo({top:0,behavior:'smooth'}); showToast(t.toastLoaded);
+}
+
+function deletePrompt(id) {
+  saved=saved.filter(x=>x.id!==id); localStorage.setItem('pcl_v6',JSON.stringify(saved));
+  renderSaved(); showToast(T[lang].toastDeleted);
+}
+
+function copyById(id) {
+  const p=saved.find(x=>x.id===id); if(!p) return;
+  navigator.clipboard.writeText(p.text).then(()=>showToast(T[lang].toastCopied)).catch(()=>showToast('⚠️ Copy failed'));
+}
+
+function renderSaved() {
+  const t=T[lang], list=document.getElementById('saved-list');
+  if(!saved.length){list.innerHTML=`<div class="no-saved">${t.noSaved}</div>`;return;}
+  list.innerHTML=saved.map(p=>`<div class="saved-item">
+    <div style="flex:1;min-width:0">
+      <div class="saved-name">${esc(p.name)}</div>
+      <div class="saved-sub">${esc((p.snap?.task||p.text||'').slice(0,55))}…</div>
+    </div>
+    <div class="saved-btns">
+      <button class="icon-btn" onclick="loadPrompt(${p.id})">${t.loadBtn}</button>
+      <button class="icon-btn" onclick="copyById(${p.id})">${t.cpBtn}</button>
+      <button class="icon-btn del" onclick="deletePrompt(${p.id})">${t.delBtn}</button>
+    </div>
+  </div>`).join('');
+}
+
+function clearAll() {
+  FIELDS.forEach(f=>{const el=document.getElementById(f);if(!el)return;el.value='';el.style.height='auto';document.getElementById('num-'+f).classList.remove('filled');document.getElementById('card-'+f).classList.remove('has-content');});
+  selLen='short'; selFmts=[]; priorities={urgency:false,risk:false}; activeFlags=[];
+  confidence=0.80; document.getElementById('conf-slider').value=0.80; document.getElementById('conf-val').textContent='0.80'; document.getElementById('conf-desc-box').innerHTML=T[lang].confDescs['0.80'];
+  const ci=document.getElementById('cust-input'); if(ci) ci.value='';
+  renderLenChips(); renderFmtChips(); renderFlags(); renderPriGrid(); renderPreview();
+}
+
+// ═══════════════════════════════════════════════════════
+// UTILITIES
+// ═══════════════════════════════════════════════════════
+function showToast(msg) {
+  clearTimeout(toastTimer);
+  const el=document.getElementById('toast'); el.textContent=msg; el.classList.add('show');
+  toastTimer=setTimeout(()=>el.classList.remove('show'),2600);
+}
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+
+// ═══════════════════════════════════════════════════════
+// INIT — runs after all functions are defined
+// ═══════════════════════════════════════════════════════
+document.getElementById('conf-desc-box').innerHTML = T[lang].confDescs['0.80'];
+renderSteps();
+renderLenChips();
+renderFmtChips();
+renderFlags();
+renderPriGrid();
+renderSaved();
+</script>
+</body>
+</html>
